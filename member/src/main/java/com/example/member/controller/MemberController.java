@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -32,15 +33,23 @@ public class MemberController {
         return "member/list";
     }
 
+    //localhost:member/new : get
+    @GetMapping("/new")
+    public String createForm(Model model){
+        model.addAttribute("member", new Member());
 
-    //localhost:member/new
+        return "member/form";
+    }
+
+    //localhost:member/new : post
     @PostMapping("/new")
-    public void newMember(@RequestBody Member member){
-        //System.out.println("등록 처리!!");
-        log.info("등록 처리!!");
-        log.info("Member : {}", member);
-        log.info("ID : {}", member.getId());
-        log.info("Name : {}", member.getName());
+    public String newMember(@ModelAttribute Member member,
+                          RedirectAttributes rttr){
+
+        memberService.save(member);
+        rttr.addFlashAttribute("message", "회원이 등록되었습니다.");
+
+        return "redirect:/member/list";
     }
 
     //localhost:8080/member/edit/{5}

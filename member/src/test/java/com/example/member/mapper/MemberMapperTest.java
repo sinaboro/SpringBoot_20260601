@@ -2,13 +2,16 @@ package com.example.member.mapper;
 
 import com.example.member.entity.Member;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringBootTest
 @Slf4j
@@ -34,12 +37,24 @@ class MemberMapperTest {
     }
 
     @Test
+    @DisplayName("update - 이름/이메일 수정 후 변경값이 반영되어야 한다")
+    @Transactional
     void updateMember(){
-        Member member = new Member(6L, "박길동", "park@test.com");
+        // given - 회원 등록
+        Member member = new Member();
+        member.setName("수정전이름");
+        member.setEmail("before3@test.com");
+        memberMapper.insertMember(member);
 
-        int result = memberMapper.updateMember(member);
+        // when - 이름·이메일 변경 후 update
+        member.setName("수정후이름");
+        member.setEmail("after3@test.com");
+        memberMapper.updateMember(member);
 
-        log.info("result : {}", result);
+        // then
+        Member updated = memberMapper.findById(member.getId());
+        assertThat(updated.getName()).isEqualTo("수정후이름");
+        assertThat(updated.getEmail()).isEqualTo("after3@test.com");
     }
 
     @Test
