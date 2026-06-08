@@ -60,4 +60,22 @@ public class MemberService {
     }
 
     //회원 수정
+    @Transactional
+    public void update(Long id, Member updateData){
+
+        //수정 대상 회원 조회
+        Member member = memberMapper.findById(id);
+
+        member.setName(updateData.getName());
+        member.setEmail(updateData.getEmail());
+
+        //수정
+        memberMapper.insertMember(member);
+
+    }
+
+    //회원 삭제
+    public void delete(Long id){
+        memberMapper.deleteMember(id);
+    }
 }
