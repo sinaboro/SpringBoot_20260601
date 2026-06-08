@@ -92,11 +92,15 @@ public class MemberController {
         return "redirect:/member/list";
     }
 
+    //localhost:8080/member/delete/1
+    //삭제 처리
+    @GetMapping("/delete/{id}")
+    public String deleteMember(@PathVariable Long id,
+                               RedirectAttributes rttr){
 
-    @PostMapping("/delete")
-    public void deleteMember(){
-//        System.out.println("삭제 처리");
-        log.info("삭제 처리");
+        memberService.delete(id);
+        rttr.addFlashAttribute("message", "회원이 삭제되었습니다.");
+        return "redirect:/member/list";
     }
 }
 
