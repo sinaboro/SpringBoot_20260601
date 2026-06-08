@@ -103,7 +103,8 @@ public class MemberService {
 
         // DB 수정
         // (실제로는 updateMember()가 더 적절)
-        memberMapper.insertMember(member);
+//        memberMapper.insertMember(member);
+        memberMapper.updateMember(member);
     }
 
     /**

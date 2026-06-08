@@ -2,10 +2,12 @@ package com.example.member.controller;
 
 import com.example.member.entity.Member;
 import com.example.member.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -43,25 +45,51 @@ public class MemberController {
 
     //localhost:member/new : post
     @PostMapping("/new")
-    public String newMember(@ModelAttribute Member member,
+    public String newMember(@Valid @ModelAttribute Member member,
+                          BindingResult result,
                           RedirectAttributes rttr){
 
-        memberService.save(member);
-        rttr.addFlashAttribute("message", "회원이 등록되었습니다.");
+        if(result.hasErrors()){
+            return "member/form";
+        }
 
+        /*
+              memberService.save(member);
+              rttr.addFlashAttribute("message", "회원이 등록되었습니다.");
+              return "redirect:/member/list";
+         */
+
+        try {
+            memberService.save(member);
+            rttr.addFlashAttribute("message", "회원이 등록되었습니다.");
+        }catch(Exception e){
+            result.rejectValue("email", "duplicate", e.getMessage());
+            return "member/form";
+        }
         return "redirect:/member/list";
+    }
+
+    //회원 수정 폼
+    //localhost:8080/member/edit/3 - get
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Long id, Model model){
+        model.addAttribute("member", memberService.findById(id));
+        return "member/editForm";
     }
 
     //localhost:8080/member/edit/{5}
     @PostMapping("/edit/{id}")
-    public String editMember(@PathVariable("id") String id,
-                           Model model){
-//        System.out.println("수정 처리");
-        log.info("수정 처리");
-        log.info("ID :  {}", id);
-        model.addAttribute("id", id);
+    public String editMember(@PathVariable("id") Long id,
+                           @Valid @ModelAttribute Member member,
+                           BindingResult result,
+                           RedirectAttributes rttr){
 
-        return "redirect:member/list";
+        if(result.hasErrors()) return  "member/editForm";
+
+        memberService.update(id, member);
+        rttr.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
+
+        return "redirect:/member/list";
     }
 
 
