@@ -22,7 +22,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // ── @Query (JPQL) ─────────────────────────
     // JPQL: 테이블명 대신 엔티티명, 컬럼명 대신 필드명 사용!
-    @Query("SELECT m FROM Member m WHERE m.age >= :minAge AND m.age <= :maxAge")
+    //@Query("SELECT m FROM Member m WHERE m.age >= :minAge AND m.age <= :maxAge")
+    @Query("select m from Member m where m.age>= :minAge and m.age <= :maxAge ")
     List<Member> findByAgeRange(@Param("minAge") int min, @Param("maxAge") int max);
 
     // ── Native Query (실제 SQL) ───────────────
@@ -33,3 +34,13 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT AVG(m.age) FROM Member m")
     Double findAverageAge();
 }
+
+
+
+
+
+
+
+
+
+
