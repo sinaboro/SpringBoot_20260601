@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: jpamember
+  datasource:
+    url: jdbc:mysql://localhost:3306/memberdb?serverTimezone=Asia/Seoul
+    username: test
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
