@@ -114,7 +114,7 @@ class MemberRepositoryTest {
     void findByNameContaining_test() {
         JpaMember m1 = new JpaMember();
         m1.setName("홍길동");
-        m1.setEmail("h1@t.com");
+        m1.setEmail("h1@a.com");
 
         JpaMember m2 = new JpaMember();
         m2.setName("홍문표");
@@ -129,10 +129,13 @@ class MemberRepositoryTest {
         memberRepository.save(m3);
 
         // when
-        List<JpaMember> result = memberRepository.findByNameContaining("홍");
+        List<JpaMember> result = memberRepository.findByEmailContaining("t.com");
+
         // then
         assertThat(result).hasSize(2);
-        assertThat(result).allMatch(m -> m.getName().contains("홍"));
+        assertThat(result).allMatch(m -> m.getEmail().contains("t.com"));
+
+        result.forEach(member-> log.info("member : {}", member));
     }
 
 }
