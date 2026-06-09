@@ -138,4 +138,32 @@ class MemberRepositoryTest {
         result.forEach(member-> log.info("member : {}", member));
     }
 
+
+    @Test
+    @DisplayName("findAll - 전체 회원 조회")
+    void findAll_test() {
+
+        // given
+        JpaMember member1 = new JpaMember();
+        member1.setName("홍길동");
+        member1.setEmail("hong@test.com");
+
+        JpaMember member2 = new JpaMember();
+        member2.setName("이순신");
+        member2.setEmail("lee@test.com");
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        // when
+        List<JpaMember> members = memberRepository.findAll();
+
+        // then
+        assertThat(members).isNotEmpty();
+
+        System.out.println("회원 수 : " + members.size());
+
+        members.forEach(member -> log.info("member : {}", member));
+    }
+
 }
