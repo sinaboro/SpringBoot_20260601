@@ -2,6 +2,7 @@ package com.example.jpastudy.repository;
 
 import com.example.jpastudy.entity.Member;
 import com.example.jpastudy.entity.Order;
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,8 @@ class MemberRepositoryTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
+
 
     @Test
     @Transactional
@@ -43,6 +46,9 @@ class MemberRepositoryTest {
         System.out.println("평균 나이: " + avg);
     }
 
+    @Autowired
+    private EntityManager em;
+
     @Test
     @Transactional
     void relationTest() {
@@ -56,12 +62,17 @@ class MemberRepositoryTest {
         orderRepository.save(o1);
         orderRepository.save(o2);
 
+        //DB 반영 - 영속성 켄특스트 초기화
+        em.flush();
+        em.clear();
+
         // 주문에서 회원 조회 (N+1 문제 없음 - LAZY)
         Order found = orderRepository.findById(o1.getId())
                 .orElseThrow();
 
-        System.out.println("주문자: " + found.getMember().getUsername());
         System.out.println("상품: " + found.getProduct());
+        System.out.println("주문자: " + found.getMember().getUsername());
+
     }
 
 }
