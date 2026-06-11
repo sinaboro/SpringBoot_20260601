@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 // MockMvc의 요청 생성(get)
 // 결과 검증(status, view, model 등)을 편하게 사용하기 위함
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -101,6 +102,19 @@ class MemberControllerTest {
 
                 // Model에 members 존재 여부 확인
                 .andExpect(model().attributeExists("members"));
+    }
+
+    @Test
+    @DisplayName("회원 등록 테스트")
+    public void create() throws Exception {
+        mockMvc.perform(
+                post("/member/new")
+                        .param("name", "까미")
+                        .param("email", "test2@test2.com")
+        )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/member/list"))
+                .andExpect(flash().attributeExists("message"));
     }
 
 }
