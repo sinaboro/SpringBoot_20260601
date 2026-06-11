@@ -129,7 +129,7 @@ class MemberRepositoryTest {
         memberRepository.save(m3);
 
         // when
-        List<JpaMember> result = memberRepository.findByEmailContaining("t.com");
+        List<JpaMember> result = memberRepository.findByNameContaining("t.com");
 
         // then
         assertThat(result).hasSize(2);

@@ -19,14 +19,24 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(bookService.createBook(dto));
     }
+
+
     @GetMapping
     public ResponseEntity<List<BookResponseDto>> getAll() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
+
+//    @GetMapping
+//    public List<BookResponseDto> getAll() {
+//        return bookService.getAllBooks();
+//    }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookResponseDto> getOne(@PathVariable Long id) {
-        return ResponseEntity.ok(bookService.getBook(id));
+//        return ResponseEntity.ok(bookService.getBook(id));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(bookService.getBook(id));
     }
     @GetMapping("/search")
     public ResponseEntity<List<BookResponseDto>> search(@RequestParam String keyword)
