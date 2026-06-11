@@ -60,4 +60,30 @@ public class MemberController {
         }
         return "redirect:/member/list";
     }
+
+    // ─── 수정 폼 ──────────────────────────────────────────────
+    @GetMapping("/edit/{id}")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("member", memberService.findById(id));
+        return "member/editForm";
+    }
+    // ─── 수정 처리 ─────────────────────────────────────────────
+    @PostMapping("/edit/{id}")
+    public String edit(@PathVariable Long id,
+                       @Valid @ModelAttribute JpaMember jpaMember,
+                       BindingResult result,
+                       RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) return "member/editForm";
+        memberService.update(id, jpaMember);
+        redirectAttributes.addFlashAttribute("message", "회원 정보가 수정되었습니다.");
+        return "redirect:/member/list";
+    }
+    // ─── 삭제 처리 ─────────────────────────────────────────────
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable Long id, RedirectAttributes
+            redirectAttributes) {
+        memberService.delete(id);
+        redirectAttributes.addFlashAttribute("message", "회원이 삭제되었습니다.");
+        return "redirect:/member/list";
+    }
 }
