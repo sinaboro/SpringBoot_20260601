@@ -18,12 +18,15 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("member/list")
+    //localhost:8080/member/list
+    //localhost:8080/member/list?keyword=신
+    @GetMapping("/member/list")
     public String list(@RequestParam(required = false)String keyword,
                        Model model) {
         if(keyword != null && !keyword.isEmpty()){
             List<JpaMember> search = memberService.search(keyword);
             model.addAttribute("members", search);
+//            search.forEach(member-> log.info("{}",member));
         }else {
             List<JpaMember> memberList = memberService.findAll();
             model.addAttribute("members", memberList);
