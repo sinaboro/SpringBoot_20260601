@@ -45,7 +45,7 @@ public class MemberService {
                 .role("ROLE_USER")
                 .password(dto.getPassword())
                 .build();
-        
+
         memberRepository.save(member);
     }
 

@@ -1,6 +1,7 @@
 package com.example.jpasecurity.controller;
 
 import com.example.jpasecurity.dto.RegisterDto;
+import com.example.jpasecurity.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
