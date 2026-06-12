@@ -31,6 +31,9 @@ public class SecurityConfig {
         log.info("------------------securityFilterChain--------------------------");
 
         http
+
+                .csrf(csrf -> csrf.disable())
+
                 // ── URL별 접근 권한 설정 ──
                 .authorizeHttpRequests(auth -> auth
                         // /auth/** (회원가입·로그인)과 정적 리소스는 로그인 없이 접근 가능
