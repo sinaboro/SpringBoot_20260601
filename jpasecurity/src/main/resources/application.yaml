@@ -1,0 +1,24 @@
+# application.yml
+# properties와 달리 계층 구조로 표현 → 가독성이 더 좋습니다
+spring:
+  datasource:
+  # MySQL 연결 URL (DB명: memberdb)
+    url:
+      jdbc:mysql://localhost:3306/memberdb?serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true&useSSL=false
+    username: test # MySQL 계정 (본인 환경에 맞게 수정)
+    password: 1234 # MySQL 비밀번호 (본인 환경에 맞게 수정)
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+                  # update: 시작 시 Entity 변경분만 ALTER TABLE 적용 (데이터 유지)
+                  # create: 시작 시 DROP 후 CREATE (데이터 삭제됨 - 주의!)
+      ddl-auto: update
+    show-sql: true # 실행 SQL 콘솔 출력 (개발 중 유용)
+    properties:
+      hibernate:
+        format_sql: true # SQL 들여쓰기 포맷 출력
+  thymeleaf:
+    cache: false # 개발 중 캐시 비활성화 (재시작 없이 HTML 변경 반영)
+server:
+  port: 8080
