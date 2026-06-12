@@ -21,6 +21,7 @@ public class MemberService {
     // RegisterDto(폼 데이터) → JpaMember(Entity) 변환 후 DB 저장
     @Transactional
     public void register(RegisterDto dto) {
+
         // 아이디 중복 체크 — 이미 존재하면 예외 발생
         if (memberRepository.existsByUsername(dto.getUsername()))
             throw new IllegalArgumentException("이미 사용 중인 아이디입니다.");

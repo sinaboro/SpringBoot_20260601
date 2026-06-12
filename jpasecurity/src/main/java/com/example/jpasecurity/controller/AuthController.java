@@ -25,6 +25,7 @@ public class AuthController {
         return "auth/login"; // templates/auth/login.html 반환
     }
 
+
     // 회원가입 화면 — GET /auth/register
     // RegisterDto 빈 객체를 모델에 담아 폼과 연결
     @GetMapping("/register")

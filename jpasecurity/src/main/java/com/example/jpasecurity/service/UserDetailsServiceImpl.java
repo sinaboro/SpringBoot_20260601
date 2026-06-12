@@ -4,6 +4,7 @@ import com.example.jpasecurity.entity.JpaMember;
 import com.example.jpasecurity.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -34,9 +35,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         JpaMember member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다.: " + username));
 
+        /*
         UserAccount userAccount = new UserAccount(member);
 
         return userAccount;
+         */
+
+        return User.builder()
+                .username(member.getUsername())
+                .password((member.getPassword()))
+                //.roles("USER")
+                .authorities(member.getRole())
+                .build();
 
     }
 }

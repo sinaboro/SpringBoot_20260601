@@ -32,13 +32,18 @@ public class UserAccount implements UserDetails {
     // BCrypt 암호화된 비밀번호 반환 (Security가 비교에 사용)
 
     @Override
-    public String getPassword() { return jpaMember.getPassword(); }
+    public String getPassword() {
+        return jpaMember.getPassword();
+    }
     // 권한 목록 반환 — ROLE_USER, ROLE_ADMIN 등
     // SimpleGrantedAuthority: 문자열 권한을 GrantedAuthority 객체로 변환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(jpaMember.getRole()));
     }
+
+
+
     // 계정 상태 메서드 — 교육용으로 모두 true 반환 (잠금·만료 기능 미사용)
     // 실무에서는 비활성화된 계정, 잠긴 계정 등을 false로 처리합니다
     @Override public boolean isAccountNonExpired() { return true; } // 계정 만료 여부
