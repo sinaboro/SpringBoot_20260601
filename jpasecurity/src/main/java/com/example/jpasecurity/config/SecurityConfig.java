@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 // @Configuration: Spring이 이 클래스를 설정 클래스로 인식
@@ -13,6 +15,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
+
+    // ★ BCryptPasswordEncoder를 Spring Bean으로 등록
+    // → MemberService에서 의존성 주입(@RequiredArgsConstructor)으로 사용
+    // → 비밀번호 암호화: encode() / 검증: matches()
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     // ★ 보안 필터 체인 설정 — URL별 접근 권한, 로그인, 로그아웃 설정
     @Bean
@@ -52,8 +62,6 @@ public class SecurityConfig {
                     .logoutSuccessUrl("/auth/login?logout=true")
                     .permitAll()
                 );
-
-
         return http.build();
     }
 }

@@ -4,6 +4,8 @@ import com.example.jpasecurity.dto.RegisterDto;
 import com.example.jpasecurity.entity.JpaMember;
 import com.example.jpasecurity.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final PasswordEncoder passwordEncoder;
 
     // ★ 회원가입 처리
     // RegisterDto(폼 데이터) → JpaMember(Entity) 변환 후 DB 저장
@@ -43,7 +47,7 @@ public class MemberService {
                 .phone(dto.getPhone())
                 .username(dto.getUsername())
                 .role("ROLE_USER")
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
         memberRepository.save(member);
