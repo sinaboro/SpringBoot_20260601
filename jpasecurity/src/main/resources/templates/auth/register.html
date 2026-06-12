@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>회원가입</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+          rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-person-plus"></i> 회원가입</h4>
+                </div>
+                <div class="card-body">
+                    <!-- 서버에서 전달한 오류 메시지 (아이디·이메일 중복) 표시 -->
+                    <div th:if="${errorMsg}" class="alert alert-danger" th:text="${errorMsg}"></div>
+                    <!-- th:object: 폼을 RegisterDto와 연결 -->
+                    <!-- th:field: 필드명 자동 매핑 + id/name 속성 자동 생성 -->
+                    <form th:action="@{/auth/register}" th:object="${registerDto}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">이름 <span class="textdanger">*</span></label>
+                            <!-- th:classappend: 검증 오류 시 is-invalid 클래스 추가 (빨간 테두리) -->
+                            <input type="text" th:field="*{name}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                   placeholder="실제 이름 (홍길동)">
+                            <!-- th:errors: @NotBlank 등 검증 실패 메시지 자동 출력 -->
+                            <div class="invalid-feedback" th:errors="*{name}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">이메일 <span class="textdanger">*</span></label>
+                            <input type="email" th:field="*{email}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'">
+                            <div class="invalid-feedback" th:errors="*{email}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">전화번호 <span class="text-muted">(선택)</span></label>
+                            <input type="text" th:field="*{phone}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid'"
+                                   placeholder="010-1234-5678">
+                            <div class="invalid-feedback" th:errors="*{phone}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">아이디 <span class="textdanger">*</span></label>
+                            <input type="text" th:field="*{username}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'"
+                                   placeholder="로그인용 ID — 영문·숫자 4~20자">
+                            <!-- 아이디와 이름의 차이를 안내하는 설명 문구 -->
+                            <div class="form-text">실제 이름이 아닌 로그인용 ID입니다. (예: hong123)</div>
+                            <div class="invalid-feedback" th:errors="*{username}"></div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">비밀번호 <span class="textdanger">*</span></label>
+                            <input type="password" th:field="*{password}" class="form-control"
+                                   th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'"
+                                   placeholder="4자 이상">
+                            <div class="invalid-feedback" th:errors="*{password}"></div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-person-check"></i> 가입하기
+                            </button>
+                            <a th:href="@{/auth/login}" class="btn btn-outline-secondary">취소</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>
