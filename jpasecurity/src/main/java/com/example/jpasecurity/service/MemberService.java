@@ -91,4 +91,9 @@ public class MemberService {
 
         member.update(name, email, phone);
     }
+
+    @Transactional
+    public void delete(Long id) {
+        memberRepository.deleteById(id);
+    }
 }

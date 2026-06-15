@@ -52,20 +52,49 @@ public class MemberContoller {
         return "member/editForm";
     }
 
+    // 수정 처리 — POST /member/edit/{id}
+    // @RequestParam: 폼에서 name 속성으로 전송된 값을 받음
+    // phone은 선택 입력이므로 required = false
     @PostMapping("/edit/{id}")
-    public String update(@PathVariable Long id,
-                         @RequestParam String name,
-                         @RequestParam String email,
-                         @RequestParam(required = false) String phone,
-                         RedirectAttributes rttr
-                         ){
+    public String update(
+            @PathVariable Long id,
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam(required = false) String phone,
+            @AuthenticationPrincipal User user ,
+            RedirectAttributes redirectAttributes) {
 
         JpaMember target = memberService.findById(id);
+        // ★ POST 위변조 방지 — GET과 POST 양쪽에서 모두 본인 확인
+        // 악의적인 사용자가 POST 요청을 직접 보내는 경우도 차단
+        if (!target.getUsername().equals(user.getUsername())) {
+            return "redirect:/member/list?error=forbidden";
+        }
 
         memberService.update(id, name, email, phone);
-        rttr.addFlashAttribute("message", " 수정이 완료되었습니다.");
+        // RedirectAttributes: 리다이렉트 후에도 1회 메시지를 전달 (Flash Attribute)
+        redirectAttributes.addFlashAttribute("message", "수정이 완료되었습니다.");
 
         return "redirect:/member/list";
     }
+
+    // 삭제 처리 — GET /member/delete/{id}
+    @GetMapping("/delete/{id}")
+    public String delete(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User user,
+            RedirectAttributes redirectAttributes) {
+        JpaMember target = memberService.findById(id);
+        // ★ 본인 확인 — 타인의 게시글 삭제 시도 차단
+        if (!target.getUsername().equals(user.getUsername())) {
+            return "redirect:/member/list?error=forbidden";
+        }
+
+        memberService.delete(id);
+        redirectAttributes.addFlashAttribute("message", "삭제되었습니다.");
+
+        return "redirect:/member/list";
+    }
+
 
 }
