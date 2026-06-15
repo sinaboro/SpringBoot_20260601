@@ -1,10 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<!-- xmlns:sec: Thymeleaf Security Extra 네임스페이스 선언 (반드시 추가) -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"><title>회원 목록</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+          rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .table thead th { background-color: #0D47A1; color: white; }
+    </style>
 </head>
 <body>
-    <h1>List</h1>
-</body>
-</html>
+<!-- 네비게이션 바: 현재 로그인 사용자명 표시 + 로그아웃 버튼 -->
+<nav class="navbar navbar-dark bg-primary mb-4">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/member/list">
+            <i class="bi bi-shield-fill"></i> JpaSecurity 회원관리
+        </a>
+        <div class="d-flex align-items-center gap-3">
+            <!-- sec:authentication property="name": 로그인 username 출력 -->
+            <span class="text-white">
+ <i class="bi bi-person-circle"></i>
+ <sec:authentication property="name"/> 님
+ </span>
+            <!-- 로그아웃은 반드시 POST 방식 — th:action이 CSRF 토큰 자동 삽입 -->
+            <form th:action="@{/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right"></i> 로그아웃
+                </button>
+            </form>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <!-- 수정/삭제 성공 메시지 — RedirectAttributes.addFlashAttribute()로 전달됨 -->
+    <div th:if="${message}" class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle"></i> <span th:text="${message}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <!-- 본인 아닌 글 접근 시 Controller에서 ?error=forbidden 파라미터로 전달 -->
+    <div th:if="${param.error == 'forbidden'}" class="alert alert-danger">
+        <i class="bi bi-x-circle"></i> 본인이 등록한 정보만 수정/삭제할 수 있습니다.
+    </div>
+    <!-- 이름 검색 폼 -->
+    <form th:action="@{/member/list}" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="keyword" class="form-control"
+                   placeholder="이름으로 검색" th:value="${keyword}">
+            <button class="btn btn-primary" type="submit">검색</button>
+            <a href="/member/list" class="btn btn-outline-secondary">초기화</a>
+        </div>
+    </form>
+    <div class="card shadow-sm"><div class="card-body p-0">
+        <table class="table table-hover table-striped mb-0">
+            <thead><tr>
+                <th>ID</th><th>이름</th><th>이메일</th>
+                <th>전화번호</th><th>아이디(ID)</th>
+                <th class="text-center">관리</th>
+            </tr></thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(members)}">
+                <td colspan="6" class="text-center text-muted py-4">등록된 회원이 없습니다.</td>
+            </tr>
+            <tr th:each="member : ${members}">
+                <td th:text="${member.id}"></td>
+                <td class="fw-semibold" th:text="${member.name}"></td>
+                <td th:text="${member.email}"></td>
+                <!-- phone이 null이면 '-' 표시 -->
+                <td th:text="${member.phone != null ? member.phone : '-'}"></td>
+                <td><span class="badge bg-secondary" th:text="${member.username}"></span></td>
+                <td class="text-center">
+                    <!-- ★ th:with: 현재 로그인 username을 me 변수에 저장 -->
+                    <th:block th:with="me=${#authentication.name}">
+                        <!-- 로그인 아이디(me)와 행의 아이디(member.username)가 같을 때만 버튼 표시 -->
+                        <a th:if="${member.username == me}"
+                           th:href="@{/member/edit/{id}(id=${member.id})}"
+                           class="btn btn-sm btn-outline-primary me-1">수정</a>
+                        <a th:if="${member.username == me}"
+                           th:href="@{/member/delete/{id}(id=${member.id})}"
+                           onclick="return confirm('정말 삭제하시겠습니까?')"
+                           class="btn btn-sm btn-outline-danger">삭제</a>
+                        <!-- 타인의 게시글에는 버튼 없이 '-' 표시 -->
+                        <span th:if="${member.username != me}" class="text-muted">-</span>
+                    </th:block>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div></div>
+</div>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body></html>

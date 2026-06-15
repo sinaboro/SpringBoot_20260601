@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -53,5 +55,20 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    // 전체 목록 조회
+    // readOnly = true: 조회 전용 트랜잭션 → 성능 최적화 (Dirty Checking 비활성화)
+    @Transactional(readOnly = true)
+    public List<JpaMember> findAll() {
+        return memberRepository.findAll();
+    }
+    // 이름 키워드 검색
+    @Transactional(readOnly = true)
+    public List<JpaMember> search(String keyword) {
+        // keyword가 없으면 전체 목록 반환
+        if (keyword == null || keyword.isBlank()) return findAll();
+        return memberRepository.findByNameContaining(keyword);
+    }
+
 
 }
