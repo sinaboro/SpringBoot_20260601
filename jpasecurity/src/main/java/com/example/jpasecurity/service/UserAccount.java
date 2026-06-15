@@ -35,6 +35,7 @@ public class UserAccount implements UserDetails {
     public String getPassword() {
         return jpaMember.getPassword();
     }
+
     // 권한 목록 반환 — ROLE_USER, ROLE_ADMIN 등
     // SimpleGrantedAuthority: 문자열 권한을 GrantedAuthority 객체로 변환
     @Override

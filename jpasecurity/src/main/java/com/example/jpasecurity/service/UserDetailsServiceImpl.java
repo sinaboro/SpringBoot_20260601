@@ -31,7 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         new UsernameNotFoundException(
                                 "사용자를 찾을 수 없습니다: " + username));
          */
-
+//        log.info("username : {}", username);
         JpaMember member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다.: " + username));
 
@@ -41,6 +41,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return userAccount;
          */
 
+//        log.info("member : {}", member);
         return User.builder()
                 .username(member.getUsername())
                 .password((member.getPassword()))

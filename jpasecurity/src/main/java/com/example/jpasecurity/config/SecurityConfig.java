@@ -32,7 +32,7 @@ public class SecurityConfig {
 
         http
 
-                .csrf(csrf -> csrf.disable())
+//                .csrf(csrf -> csrf.disable())
 
                 // ── URL별 접근 권한 설정 ──
                 .authorizeHttpRequests(auth -> auth
