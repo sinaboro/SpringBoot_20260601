@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -79,4 +80,15 @@ public class MemberService {
 
     }
 
+    // 수정 — name, email, phone만 변경 가능
+    // ★ JPA Dirty Checking 활용: @Transactional 범위 안에서
+    // Entity 필드를 변경하면 종료 시 자동으로 UPDATE SQL이 실행됩니다
+    // → save() 를 별도로 호출하지 않아도 됩니다
+    @Transactional
+    public void update(Long id, String name, String email, String phone) {
+        JpaMember member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+
+        member.update(name, email, phone);
+    }
 }

@@ -44,7 +44,7 @@
     </div>
 
     <!-- 본인 아닌 글 접근 시 Controller에서 ?error=forbidden 파라미터로 전달 -->
-    <div th:if="${param.error[0] == 'forbidden'}" class="alert alert-danger">
+    <div th:if="${param.error != null and param.error[0] == 'forbidden'}" class="alert alert-danger">
         <i class="bi bi-x-circle"></i> 본인이 등록한 정보만 수정/삭제할 수 있습니다.
     </div>
 
