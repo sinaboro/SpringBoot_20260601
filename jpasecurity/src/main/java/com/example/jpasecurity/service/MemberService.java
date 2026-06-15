@@ -49,7 +49,7 @@ public class MemberService {
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .username(dto.getUsername())
-                .role("ROLE_USER")
+                .role("ROLE_ADMIN")
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
