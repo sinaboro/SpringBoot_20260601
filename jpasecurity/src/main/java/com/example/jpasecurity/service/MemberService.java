@@ -62,6 +62,7 @@ public class MemberService {
     public List<JpaMember> findAll() {
         return memberRepository.findAll();
     }
+
     // 이름 키워드 검색
     @Transactional(readOnly = true)
     public List<JpaMember> search(String keyword) {
@@ -70,5 +71,12 @@ public class MemberService {
         return memberRepository.findByNameContaining(keyword);
     }
 
+    // ID로 단건 조회 — 없으면 예외 발생
+    @Transactional(readOnly = true)
+    public JpaMember findById(Long id){
+        return memberRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+
+    }
 
 }
