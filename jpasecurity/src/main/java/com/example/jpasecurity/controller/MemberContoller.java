@@ -5,7 +5,7 @@ import com.example.jpasecurity.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.User;
+import com.example.jpasecurity.service.UserAccount;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +33,7 @@ public class MemberContoller {
 
     @GetMapping("/edit/{id}")
     public String editForm(@PathVariable Long id,
-                           @AuthenticationPrincipal User user,
+                           @AuthenticationPrincipal UserAccount user,
                            Model model){
         JpaMember target = memberService.findById(id);
 
@@ -43,7 +43,7 @@ public class MemberContoller {
         //검증 코드
         // ★ 본인 확인: DB에 저장된 대상 username와 로그인 사용자의 username를 비교
         // 타인이 URL을 직접 입력해도 여기서 차단됩니다
-        if(!target.getUsername().equals(user.getUsername())){
+        if (!canModify(target, user)) {
             return "redirect:/member/list?error=forbidden";
         }
 
@@ -61,13 +61,13 @@ public class MemberContoller {
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam(required = false) String phone,
-            @AuthenticationPrincipal User user ,
+            @AuthenticationPrincipal UserAccount user,
             RedirectAttributes redirectAttributes) {
 
         JpaMember target = memberService.findById(id);
         // ★ POST 위변조 방지 — GET과 POST 양쪽에서 모두 본인 확인
         // 악의적인 사용자가 POST 요청을 직접 보내는 경우도 차단
-        if (!target.getUsername().equals(user.getUsername())) {
+        if (!canModify(target, user)) {
             return "redirect:/member/list?error=forbidden";
         }
 
@@ -82,11 +82,11 @@ public class MemberContoller {
     @GetMapping("/delete/{id}")
     public String delete(
             @PathVariable Long id,
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal UserAccount user,
             RedirectAttributes redirectAttributes) {
         JpaMember target = memberService.findById(id);
         // ★ 본인 확인 — 타인의 게시글 삭제 시도 차단
-        if (!target.getUsername().equals(user.getUsername())) {
+        if (!canModify(target, user)) {
             return "redirect:/member/list?error=forbidden";
         }
 
@@ -96,5 +96,13 @@ public class MemberContoller {
         return "redirect:/member/list";
     }
 
-
+    // 본인이거나 ADMIN 권한이면 수정/삭제 가능 (list.html의 버튼 표시 조건과 동일)
+    // UserDetailsServiceImpl이 UserAccount를 반환하므로 @AuthenticationPrincipal 타입도 UserAccount여야 합니다
+    private boolean canModify(JpaMember target, UserAccount user) {
+        if (user == null) return false;
+        boolean isOwner = target.getUsername().equals(user.getUsername());
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(a -> "ROLE_ADMIN".equals(a.getAuthority()));
+        return isOwner || isAdmin;
+    }
 }

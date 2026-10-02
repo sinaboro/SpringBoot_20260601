@@ -34,9 +34,8 @@ public class BookController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookResponseDto> getOne(@PathVariable Long id) {
-//        return ResponseEntity.ok(bookService.getBook(id));
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(bookService.getBook(id));
+        // 조회는 200 OK (201 Created는 생성(POST) 응답에만 사용)
+        return ResponseEntity.ok(bookService.getBook(id));
     }
     @GetMapping("/search")
     public ResponseEntity<List<BookResponseDto>> search(@RequestParam String keyword)

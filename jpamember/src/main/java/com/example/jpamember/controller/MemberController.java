@@ -47,7 +47,7 @@ public class MemberController {
 
     // ─── 등록 처리 ─────────────────────────────────────────────
     @PostMapping("/new")
-    public String create(@Valid @ModelAttribute JpaMember jpaMember,
+    public String create(@Valid @ModelAttribute("member") JpaMember jpaMember,
                          BindingResult result,
                          RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) return "member/form";
@@ -70,7 +70,7 @@ public class MemberController {
     // ─── 수정 처리 ─────────────────────────────────────────────
     @PostMapping("/edit/{id}")
     public String edit(@PathVariable Long id,
-                       @Valid @ModelAttribute JpaMember jpaMember,
+                       @Valid @ModelAttribute("member") JpaMember jpaMember,
                        BindingResult result,
                        RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) return "member/editForm";

@@ -164,10 +164,15 @@ curl -X POST http://localhost:8080/api/books \
 | `service/UserAccount` | `UserDetails` 구현. 권한(`getAuthorities`), 계정 상태 |
 | `service/UserDetailsServiceImpl` | `findByUsername`으로 사용자를 찾아 `UserAccount`로 감싸서 반환 |
 | `controller/AuthController` | `/auth/login`, `/auth/register` |
-| `controller/MemberContoller` | 목록과 검색. `@AuthenticationPrincipal`로 **본인 계정만 수정·삭제** 허용 (아니면 `?error=forbidden`) |
+| `controller/MemberContoller` | 목록과 검색. `@AuthenticationPrincipal UserAccount`로 로그인 사용자를 받아 **본인 또는 ADMIN만 수정·삭제** 허용 (아니면 `?error=forbidden`) |
 | 템플릿 | `thymeleaf-extras-springsecurity6`. `sec:authentication="principal.username"`으로 로그인 사용자 표시, `th:action`으로 **CSRF 토큰 자동 삽입**, 로그아웃은 POST |
 
 **흐름**: 회원가입(`/auth/register`) → 로그인(`/auth/login`) → 회원 목록(`/member/list`) → 본인 정보 수정·삭제 → 로그아웃
+
+**권한**: 회원가입하면 `ROLE_USER`가 부여됩니다. 관리자 계정이 필요하면 DB에서 직접 바꾸세요.
+```sql
+UPDATE jpa_member SET role = 'ROLE_ADMIN' WHERE username = 'admin';
+```
 
 ---
 

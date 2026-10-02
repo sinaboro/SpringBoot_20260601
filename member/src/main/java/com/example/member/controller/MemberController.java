@@ -27,7 +27,7 @@ public class MemberController {
     public String list(@RequestParam(required = false) String keyword, Model model)
     {
         if (keyword != null && !keyword.isBlank()) {
-//            model.addAttribute("members", memberService.search(keyword));
+            model.addAttribute("members", memberService.search(keyword));
             model.addAttribute("keyword", keyword);
         } else {
             model.addAttribute("members", memberService.findAll());

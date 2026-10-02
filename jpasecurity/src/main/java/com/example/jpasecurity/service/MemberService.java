@@ -50,7 +50,7 @@ public class MemberService {
                 .email(dto.getEmail())
                 .phone(dto.getPhone())
                 .username(dto.getUsername())
-                .role("ROLE_ADMIN")
+                .role("ROLE_USER") // 기본 권한: 일반회원 (관리자는 DB에서 ROLE_ADMIN으로 변경)
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
 
